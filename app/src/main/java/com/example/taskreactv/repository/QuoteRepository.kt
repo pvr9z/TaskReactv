@@ -20,11 +20,13 @@ class QuoteRepository(
     val quotes: LiveData<QuoteList>
         get() = quotesLiveData
 
-    fun getQuotes(page: Int) {
+    fun getQuotes() {
         if (NetworkUtils.isInternetAvailable(applicationContext)) {
-            val observable: Observable<QuoteList> = quoteService.getQuotes(page)
-            observable.subscribeOn(Schedulers.io())
+            Observable
+                .defer { Observable.just((Math.random() * 10).toInt()) }
+                .flatMap{number -> quoteService.getQuotes(number)}
                 .repeatWhen { completed -> completed.delay(10, TimeUnit.SECONDS) }
+                .subscribeOn(Schedulers.io())
                 .subscribe { quotesLiveData.postValue(it) }
         }
     }

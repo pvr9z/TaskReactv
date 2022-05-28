@@ -12,7 +12,7 @@ class MainViewModel(private val repository: QuoteRepository) : ViewModel() {
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getQuotes(2)
+            repository.getQuotes()
         }
     }
 
